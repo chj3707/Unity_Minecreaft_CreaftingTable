@@ -8,11 +8,11 @@ using UnityEngine;
 
 public class CreaftingTable : MonoBehaviour
 {
-    private int m_SlotCount = 9;
+    private int m_SlotCount = 9; // ½½·Ô °³¼ö
 
     void Start()
     {
-        SlotSetting.GetInstance().SetSlot(m_SlotCount, this.transform);
+        SlotGenerator.GetInstance().SetSlot(m_SlotCount, this.transform);
     }
 
     

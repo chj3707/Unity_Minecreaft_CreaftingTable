@@ -8,12 +8,12 @@ using UnityEngine;
 
 public class Inventroy : MonoBehaviour
 {
-    private int m_SlotCount = 27;
+    private int m_SlotCount = 27; // ½½·Ô °³¼ö
 
 
     void Start()
     {
-        SlotSetting.GetInstance().SetSlot(m_SlotCount, this.transform); // ½½·Ô ¼¼ÆÃ
+        SlotGenerator.GetInstance().SetSlot(m_SlotCount, this.transform); // ½½·Ô ¼¼ÆÃ
 
     }
 
