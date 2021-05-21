@@ -6,10 +6,11 @@ using UnityEngine.UI;
 
 public class Slot : MonoBehaviour
 {
+    public object m_ItemInfo = null;
     private Image m_SlotItemImage = null;   // 아이템 이미지
     private Text m_SlotItemCount = null;    // 아이템 개수
 
-    private E_SLOTSTATE m_SlotState;        // 슬롯 상태
+    public E_SLOTSTATE m_SlotState;        // 슬롯 상태
 
     private void Awake()
     {
@@ -21,7 +22,7 @@ public class Slot : MonoBehaviour
     void Start()
     {
         m_SlotState = E_SLOTSTATE.Empty;
-
+        
         UpdateSlotUI();
     }
 

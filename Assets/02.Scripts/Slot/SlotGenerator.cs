@@ -6,19 +6,12 @@ using UnityEngine;
  * 슬롯 세팅용 클래스
  */
 
-public class SlotGenerator : MonoBehaviour
+public class SlotGenerator : Singleton_Mono<SlotGenerator> // 싱글톤 적용
 {
-    private static SlotGenerator m_Instance = null;
+    // 외부에서 생성되지 않도록 생성자 protected 선언
+    protected SlotGenerator() { }
 
     public GameObject m_Slot = null; // 복사할 오브젝트(슬롯)
-
-    private void Awake()
-    {
-        if (m_Instance == null)
-        {
-            m_Instance = this;
-        }
-    }
 
     void Start()
     {
@@ -36,19 +29,7 @@ public class SlotGenerator : MonoBehaviour
             copyObj.transform.SetParent(p_transform);               // 복사한 오브젝트 상위 오브젝트 설정
         }
     }
-
-    public static SlotGenerator GetInstance()
-    {
-        if (m_Instance == null)
-        {
-            m_Instance = FindObjectOfType<SlotGenerator>();
-            return m_Instance;
-        }
-
-        return m_Instance;
-    }
-
-    
+ 
     void Update()
     {
         

@@ -6,15 +6,14 @@ using UnityEngine;
  * º¸°üÇÔ
  */ 
 
-public class Inventroy : MonoBehaviour
+public class Inventroy : Singleton_Mono<Inventroy> // ½Ì±ÛÅæ Àû¿ë
 {
-    private int m_SlotCount = 27; // ½½·Ô °³¼ö
+    public int m_SlotCount = 27; // ½½·Ô °³¼ö
 
 
     void Start()
     {
-        SlotGenerator.GetInstance().SetSlot(m_SlotCount, this.transform); // ½½·Ô ¼¼ÆÃ
-
+        SlotGenerator.GetInstance.SetSlot(m_SlotCount, this.transform); // ½½·Ô ¼¼ÆÃ
     }
 
     

@@ -12,7 +12,7 @@ public class CreaftingTable : MonoBehaviour
 
     void Start()
     {
-        SlotGenerator.GetInstance().SetSlot(m_SlotCount, this.transform);
+        SlotGenerator.GetInstance.SetSlot(m_SlotCount, this.transform);
     }
 
     
