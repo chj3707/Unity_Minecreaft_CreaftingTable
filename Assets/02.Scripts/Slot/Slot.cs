@@ -142,7 +142,7 @@ public class Slot : MonoBehaviour,
                     break;
             }
         }
-        tempManager.m_BeginDraggingSlotInfo = null;
+        
         if (transform.parent.CompareTag("CreaftingTable")) // 제작대에 접근하면 테이블 정보 갱신
         {
             CreaftingTable.GetInstance.TableInfoRenewal();
