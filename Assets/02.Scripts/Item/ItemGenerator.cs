@@ -9,8 +9,7 @@ using UnityEngine.UI;
  * 소비 아이템 생성기
  */
 
-
-public class ItemGenerator : MonoBehaviour
+public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
 {
     private ConsumerItem m_ConsumerItem = null;   // 소비 아이템
 
@@ -76,18 +75,18 @@ public class ItemGenerator : MonoBehaviour
                     currItemCount = int.Parse(tempText.text); // 현재 아이템 개수
                     tempVal = m_MaxItemCount - currItemCount; // 최대개수 보다 부족한 개수
 
-                    // 부족한 개수가 가져올 아이템 개수보다 작으면
+                    // 부족한 개수가 가져올 아이템 개수보다 작으면 채워주고 다음 슬롯으로 넘어감
                     if (tempVal < getItemCount)
                     {
                         currItemCount += tempVal;       // 부족한 개수 채워주기
                         getItemCount -= tempVal;        // 채워준 개수만큼 빼기
-                        tempImage.sprite = GetFiledInfoToReflectionReferenceType(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
+                        tempImage.sprite = GetFiledInfoToReflectionReferenceType<Sprite>(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
                         tempText.text = currItemCount.ToString(); // 변경 내용 저장
                         tempSlot.UpdateSlotUI(); // 슬롯 UI 업데이트
                         continue;
                     }
 
-                    tempImage.sprite = GetFiledInfoToReflectionReferenceType(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
+                    tempImage.sprite = GetFiledInfoToReflectionReferenceType<Sprite>(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
                     tempText.text = getItemCount.ToString(); // 개수 저장
                     tempSlot.UpdateSlotUI(); // 슬롯 UI 업데이트
                     break;
@@ -154,22 +153,37 @@ public class ItemGenerator : MonoBehaviour
         return default(T);
     }
 
+    // 나무 버튼
     public void _On_GetWoodBtn()
     {
+        if (EventManager.GetInstance.m_isDragging)
+        {
+            return;
+        }
         m_ConsumerItem = ItemManager.GetInstance.GetItem<ConsumerItem>("Wood", E_ITEMTYPE.Consumption); // 아이템 정보 빼오기
-        SetSlotIntoItem(m_ConsumerItem.m_Item);
+        SetSlotIntoItem(m_ConsumerItem.m_Item); // 슬롯에 아이템 세팅
     }
 
+    // 실 버튼
     public void _On_GetStringBtn()
     {
+        if (EventManager.GetInstance.m_isDragging)
+        {
+            return;
+        }
         m_ConsumerItem = ItemManager.GetInstance.GetItem<ConsumerItem>("String", E_ITEMTYPE.Consumption); // 아이템 정보 빼오기
         SetSlotIntoItem(m_ConsumerItem.m_Item);
     }
 
+    // 당근 버튼
     public void _On_GetCarrotBtn()
     {
+        if (EventManager.GetInstance.m_isDragging)
+        {
+            return;
+        }
         m_ConsumerItem = ItemManager.GetInstance.GetItem<ConsumerItem>("Carrot", E_ITEMTYPE.Consumption); // 아이템 정보 빼오기
-        SetSlotIntoItem(m_ConsumerItem.m_Item);
+        SetSlotIntoItem(m_ConsumerItem.m_Item); 
     }
 
     void Start()
