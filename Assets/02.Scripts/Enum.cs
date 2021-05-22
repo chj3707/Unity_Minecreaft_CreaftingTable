@@ -9,20 +9,8 @@ public enum E_SLOTSTATE
     Full       // 아이템이 있는 상태
 }
 
-// 장비 아이템
-public enum E_EQUIPMENT_ITEMS
-{
-    None = -1,
-
-    WoodenAxe,          // 나무 도끼
-    FishingRod,         // 낚싯대
-    CarrotOnAStick,     // 당근 낚싯대
-
-    Max
-}
-
-// 소비 아이템
-public enum E_CONSUMER_ITEMS
+// 아이템
+public enum E_ITEMS
 {
     None = -1,
 
@@ -31,14 +19,10 @@ public enum E_CONSUMER_ITEMS
     String,             // 실
     Carrot,             // 당근
 
+    WoodenAxe,          // 나무 도끼
+    FishingRod,         // 낚싯대
+    CarrotOnAStick,     // 당근 낚싯대
+
     Max
 }
 
-// 아이템 타입
-public enum E_ITEMTYPE
-{
-    None = -1,
-
-    Equipment,       // 장비 아이템
-    Consumption      // 소모 아이템
-}

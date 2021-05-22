@@ -11,12 +11,12 @@ using UnityEngine.UI;
 
 public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
 {
-    private ConsumerItem m_ConsumerItem = null;   // 소비 아이템
+    private Item m_ItemInfo = null;   // 아이템
 
     public int m_MaxItemCount = 10; // 아이템 가질 수 있는 최대 개수
 
     // 슬롯에 아이템 세팅해주는 함수 (좌측 상단부터 정렬해가며 생성됨)
-    void SetSlotIntoItem(E_CONSUMER_ITEMS p_item)
+    void SetSlotIntoItem(E_ITEMS p_item)
     {
         Slot tempSlot;         // n번째 슬롯
         Image tempImage;       // n번째 슬롯의 Image
@@ -24,7 +24,7 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
         int currItemCount;     // n번째 슬롯의 현재 아이템개수(Text 파싱)
         int tempVal;           // n번째 슬롯 최대개수 - 가지고 있는 아이템개수(부족한 개수)
         int getItemCount = 15; // 버튼 클릭으로 가져올 아이템 개수
-        E_CONSUMER_ITEMS tempConsumeItem = E_CONSUMER_ITEMS.None;
+        E_ITEMS tempItem = E_ITEMS.None;
 
         for (int i = 0; i < Inventroy.GetInstance.m_SlotCount; i++)
         {
@@ -32,8 +32,8 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
             
             if (tempSlot.m_SlotState == E_SLOTSTATE.Full) // 아이템이 있으면
             {
-                tempConsumeItem = GetFiledInfoToReflectionValueType<E_CONSUMER_ITEMS>(tempSlot.m_ItemInfo, tempConsumeItem); // 슬롯의 아이템 정보 저장
-                if (tempConsumeItem != p_item) // 다른 아이템이면 다음 슬롯으로 넘어감
+                tempItem = GetFiledInfoToReflectionValueType<E_ITEMS>(tempSlot.m_ItemInfo, tempItem); // 슬롯의 아이템 정보 저장
+                if (tempItem != p_item) // 다른 아이템이면 다음 슬롯으로 넘어감
                 {
                     continue;
                 }
@@ -67,7 +67,7 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
             {
                 if (getItemCount > 0)
                 {
-                    tempSlot.m_ItemInfo = m_ConsumerItem;       // 슬롯에 아이템 정보 할당
+                    tempSlot.m_ItemInfo = m_ItemInfo;           // 슬롯에 아이템 정보 할당
                     tempSlot.m_SlotState = E_SLOTSTATE.Full;    // 아이템 있는 상태로 변경
                     tempImage = tempSlot.transform.GetChild(0).GetComponent<Image>(); // 아이템이 없는 슬롯의 하위 오브젝트 Image 컴포넌트에 접근
                     tempText = tempImage.transform.GetChild(0).GetComponent<Text>(); // 슬롯의 하위 오브젝트(이미지)의 하위 오브젝트 Text컴포넌트에 접근
@@ -153,6 +153,50 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
         return default(T);
     }
 
+    // 리플렉션 사용해서 클래스 멤버변수 아이템 데이터 가져오기
+    //public E_ITEMS GetFiledInfoToReflectionEnum(object p_object, E_ITEMS p_item)
+    //{
+    //    E_ITEMS retItem = E_ITEMS.None;
+    //    if (p_object == null)
+    //    {
+    //        return retItem;
+    //    }
+
+    //    // 리플렉션으로 멤버 변수에 접근 (m_ItemInfo :: 자료형 objct)
+    //    Type type = p_object.GetType();
+    //    FieldInfo[] fields = type.GetFields(BindingFlags.Public |
+    //                                        BindingFlags.Instance);
+    //    foreach (var field in fields)
+    //    {
+    //        if (field.FieldType == p_item.GetType())       // 매개변수로 가져온 자료형과 같은 자료형 찾기
+    //        {
+    //            retItem = (E_ITEMS)field.GetValue(p_object); // 형변환
+    //            return retItem;
+    //        }
+    //    }
+    //    return retItem;
+    //}
+
+    // 리플렉션 사용해서 클래스 아이템 이름 string형으로 가져오기
+    public string GetFiledInfoToReflectionString(object p_object, E_ITEMS p_item)
+    {
+        string retString = "";
+
+        // 리플렉션으로 멤버 변수에 접근 (m_ItemInfo :: 자료형 objct)
+        Type type = p_object.GetType();
+        FieldInfo[] fields = type.GetFields(BindingFlags.Public |
+                                            BindingFlags.Instance);
+        foreach (var field in fields)
+        {
+            if (field.FieldType == p_item.GetType())       // 매개변수로 가져온 자료형과 같은 자료형 찾기
+            {
+                retString = ((E_ITEMS)field.GetValue(p_object)).ToString(); // 형변환
+                return retString;
+            }
+        }
+        return retString;
+    }
+
     // 나무 버튼
     public void _On_GetWoodBtn()
     {
@@ -160,8 +204,8 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
         {
             return;
         }
-        m_ConsumerItem = ItemManager.GetInstance.GetItem<ConsumerItem>("Wood", E_ITEMTYPE.Consumption); // 아이템 정보 빼오기
-        SetSlotIntoItem(m_ConsumerItem.m_Item); // 슬롯에 아이템 세팅
+        m_ItemInfo = ItemManager.GetInstance.GetItem<Item>("Wood"); // 아이템 정보 빼오기
+        SetSlotIntoItem(m_ItemInfo.m_Item); // 슬롯에 아이템 세팅
     }
 
     // 실 버튼
@@ -171,8 +215,8 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
         {
             return;
         }
-        m_ConsumerItem = ItemManager.GetInstance.GetItem<ConsumerItem>("String", E_ITEMTYPE.Consumption); // 아이템 정보 빼오기
-        SetSlotIntoItem(m_ConsumerItem.m_Item);
+        m_ItemInfo = ItemManager.GetInstance.GetItem<Item>("String"); // 아이템 정보 빼오기
+        SetSlotIntoItem(m_ItemInfo.m_Item); // 슬롯에 아이템 세팅
     }
 
     // 당근 버튼
@@ -182,8 +226,8 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
         {
             return;
         }
-        m_ConsumerItem = ItemManager.GetInstance.GetItem<ConsumerItem>("Carrot", E_ITEMTYPE.Consumption); // 아이템 정보 빼오기
-        SetSlotIntoItem(m_ConsumerItem.m_Item); 
+        m_ItemInfo = ItemManager.GetInstance.GetItem<Item>("Carrot"); // 아이템 정보 빼오기
+        SetSlotIntoItem(m_ItemInfo.m_Item); // 슬롯에 아이템 세팅
     }
 
     void Start()
