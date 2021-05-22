@@ -75,12 +75,18 @@ public class Slot : MonoBehaviour,
                         tempManager.m_BeginDraggingSlotInfo.m_SlotItemCount.text = this.m_SlotItemCount.text;       // 아이템 개수
                         tempManager.m_BeginDraggingSlotInfo.m_SlotState = E_SLOTSTATE.Full;                         // 슬롯 상태 변경
                         tempManager.m_BeginDraggingSlotInfo.UpdateSlotUI();                                         // UI 업데이트
+                        if (tempManager.m_BeginDraggingSlotInfo.
+                            transform.parent.CompareTag("CreaftingTable")) // 제작대에 접근하면 테이블 정보 갱신
+                        {
+                            CreaftingTable.GetInstance.TableInfoRenewal();
+                        }
 
                         // 현재 슬롯에 드래그 되어 있는 정보 할당
                         m_ItemInfo = tempManager.m_DraggingItemInfo;                                                // 아이템 정보 가져오기
                         m_SlotItemImage.sprite = tempManager.m_DraggingItem.GetComponent<Image>().sprite;           // 들고 있던 아이템 이미지에 접근
                         m_SlotItemCount.text = tempManager.m_DraggingItem.GetComponentInChildren<Text>().text;      // 들고 있던 아이템 텍스트에 접근
                         UpdateSlotUI();                                                                             // UI 업데이트
+
 
                         tempManager.m_DraggingItem.SetActive(false); // 드래그 아이템 오브젝트 비활성화
                     }
@@ -147,6 +153,7 @@ public class Slot : MonoBehaviour,
         {
             CreaftingTable.GetInstance.TableInfoRenewal();
         }
+        
     }
 
     // 아이템 들기 (좌클릭, 우클릭 구분)
@@ -168,6 +175,7 @@ public class Slot : MonoBehaviour,
                 tempText.text = m_SlotItemCount.text;       // 아이템 개수
 
                 ReSetSlotUI();  // 해당 슬롯 초기화
+                
                 break;
 
             // 우클릭
@@ -190,7 +198,11 @@ public class Slot : MonoBehaviour,
 
                     // 아이템이 하나도 남지 않으면 초기화
                     if (m_SlotItemCount.text == "0")
+                    {
                         ReSetSlotUI();
+                        
+                    }
+                        
                 }
                 break;
         }
@@ -232,9 +244,10 @@ public class Slot : MonoBehaviour,
                 
                 break;
         }
-
+        
         m_SlotState = E_SLOTSTATE.Full; // 슬롯 상태 변경
         UpdateSlotUI(); // UI 업데이트
+        
     }
 
     // 슬롯 초기화
