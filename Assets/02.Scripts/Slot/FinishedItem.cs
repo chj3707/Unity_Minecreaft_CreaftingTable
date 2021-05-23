@@ -13,8 +13,9 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
 {
     protected FinishedItem() { }
 
-    private object m_FinishedItem = null;          // 완성 아이템 정보
-    private Image m_FinishedItemImage = null;    // 완성품 이미지
+    private object m_FinishedItem = null;       // 완성 아이템 정보
+    private Image m_FinishedItemImage = null;   // 완성품 이미지
+    private Text m_FinishedItemText = null;     // 완성품 개수
     public E_SLOTSTATE m_SlotState;             // 슬롯 상태
 
     // 완성품 확인
@@ -35,6 +36,7 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
         m_FinishedItemImage.sprite =
             ItemGenerator.GetInstance.GetFiledInfoToReflectionReferenceType
             (m_FinishedItem, m_FinishedItemImage.sprite);           // 완성 아이템 이미지 적용
+        m_FinishedItemText.text = "1";                              // 완성 아이템 개수 적용
 
         m_SlotState = E_SLOTSTATE.Full;                             // 슬롯 상태 변경
 
@@ -50,17 +52,37 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
         if (tempManager.m_isDragging)         // 아이템을 든 상태로 접근 불가
             return;
 
-        tempManager.m_isDragging = true;
+        tempManager.m_isDragging = true;                 // 드래그 시작
         tempManager.m_DraggingItem.SetActive(true);
+        tempManager.m_BeginDraggingSlotInfo = null;      // 드래그 시작한 슬롯 정보 저장
         tempManager.m_DraggingItemInfo = m_FinishedItem; // 드래그 아이템 정보 할당
 
+        Image tempImage = tempManager.m_DraggingItem.GetComponent<Image>();           // 드래그 아이템 이미지에 접근
+        Text tempText = tempManager.m_DraggingItem.GetComponentInChildren<Text>();    // 드래그 아이템 텍스트에 접근    
 
-        ResetSlotUI();
+        E_ITEMTYPE tempItemType = E_ITEMTYPE.None;                                    // 아이템 타입 확인용 임시 변수
+        tempItemType = ItemGenerator.GetInstance.
+            GetFiledInfoToReflectionValueType(m_FinishedItem, tempItemType);          // 완성품의 아이템 타입 가져오기
+
+        tempImage.sprite = m_FinishedItemImage.sprite;                                // 드래그 아이템 이미지 설정
+        
+        // 아이템 타입별로 텍스트 설정
+        if (tempItemType == E_ITEMTYPE.Equipment)                                     // 드래그 아이템 개수 설정
+            tempText.text = null;
+        
+        else
+            tempText.text = (int.Parse(m_FinishedItemText.text)).ToString();
+
+        CreaftingTable.GetInstance.TableReset();        // 제작 테이블 재설정
+        ResetSlotUI();                                  // 완성품 슬롯 초기화
+        FinishedCheak();                                // 테이블에 아이템이 남아 있을 수 있으므로 체크
     }
+
     public void ResetSlotUI()
     {
         m_FinishedItem = null;                  // 아이템 정보 초기화
         m_SlotState = E_SLOTSTATE.Empty;        // 아이템 슬롯 빈 상태로 설정
+        m_FinishedItemText.text = "0";          // 아이템 개수 초기화
 
         UpdateUI();                             // UI 업데이트
     }
@@ -68,14 +90,17 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
     {
         // 슬롯 비었으면 비활성화
         m_FinishedItemImage.enabled = m_SlotState == E_SLOTSTATE.Empty ? false : true;
+        //m_FinishedItemText.enabled = m_SlotState == E_SLOTSTATE.Empty ? false : true;
     }
 
     void Start()
     {
         m_FinishedItemImage = transform.GetChild(0).GetComponent<Image>();
+        m_FinishedItemText = m_FinishedItemImage.GetComponentInChildren<Text>();
 
         m_SlotState = E_SLOTSTATE.Empty;       // 빈상태로 시작
         m_FinishedItemImage.enabled = false;   // 이미지 비활성화
+        m_FinishedItemText.enabled = false;    // 텍스트 비활성화
     }
     
     void Update()

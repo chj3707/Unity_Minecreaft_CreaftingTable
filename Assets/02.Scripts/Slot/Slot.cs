@@ -255,8 +255,7 @@ public class Slot : MonoBehaviour,
         m_ItemInfo = null;                  // 아이템 정보 초기화
         m_SlotState = E_SLOTSTATE.Empty;    // 아이템 슬롯 빈 상태로 설정
         m_SlotItemCount.text = "0";         // 아이템 텍스트 초기화
-
-        
+                                            // 
         UpdateSlotUI();                     // UI 업데이트
     }
 

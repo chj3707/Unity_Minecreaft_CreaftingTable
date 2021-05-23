@@ -37,7 +37,9 @@ public enum E_CONSUMEITEMS
 // 아이템 타입
 public enum E_ITEMTYPE
 {
-    Equipment = 0,
+    None = 0,
+
+    Equipment,
     Consumption
 }
 
