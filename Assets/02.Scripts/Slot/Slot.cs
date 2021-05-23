@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Slot : MonoBehaviour,
     IPointerClickHandler   // 포인터 누르고 뗄 때 호출
 {
-    public Item m_ItemInfo = null;          // 아이템 정보
+    public object m_ItemInfo = null;          // 아이템 정보
     private Image m_SlotItemImage = null;   // 아이템 이미지
     private Text m_SlotItemCount = null;    // 아이템 개수
 
@@ -24,8 +24,7 @@ public class Slot : MonoBehaviour,
     void Start()
     {
         m_SlotState = E_SLOTSTATE.Empty;
-        m_ItemInfo = new Item(E_ITEMS.None, null);
-
+        
         UpdateSlotUI();
     }
 
@@ -257,8 +256,7 @@ public class Slot : MonoBehaviour,
         m_SlotState = E_SLOTSTATE.Empty;    // 아이템 슬롯 빈 상태로 설정
         m_SlotItemCount.text = "0";         // 아이템 텍스트 초기화
 
-        m_ItemInfo = new Item(E_ITEMS.None, null);
-
+        
         UpdateSlotUI();                     // UI 업데이트
     }
 

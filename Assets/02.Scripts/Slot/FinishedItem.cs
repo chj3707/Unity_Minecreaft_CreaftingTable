@@ -13,14 +13,14 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
 {
     protected FinishedItem() { }
 
-    private Item m_FinishedItem = null;          // 완성 아이템 정보
+    private object m_FinishedItem = null;          // 완성 아이템 정보
     private Image m_FinishedItemImage = null;    // 완성품 이미지
     public E_SLOTSTATE m_SlotState;             // 슬롯 상태
 
     // 완성품 확인
     public void FinishedCheak()
     {
-        Item tempItem = CreaftingTable.GetInstance.CompareTableToRecipe(); 
+        object tempItem = CreaftingTable.GetInstance.CompareTableToRecipe(); 
 
         // 레시피와 맞지않으면 null로 받아옴
         if (tempItem == null)
@@ -30,7 +30,12 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
         }
         
         m_FinishedItem = tempItem;                                  // 완성 아이템 정보 할당
-        m_FinishedItemImage.sprite = m_FinishedItem.m_ItemSprite;   // 완성 아이템 이미지 적용
+
+
+        m_FinishedItemImage.sprite =
+            ItemGenerator.GetInstance.GetFiledInfoToReflectionReferenceType
+            (m_FinishedItem, m_FinishedItemImage.sprite);           // 완성 아이템 이미지 적용
+
         m_SlotState = E_SLOTSTATE.Full;                             // 슬롯 상태 변경
 
         UpdateUI();

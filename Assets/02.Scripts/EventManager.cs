@@ -5,7 +5,7 @@ using UnityEngine;
 public class EventManager : Singleton_Mono<EventManager> // 싱글톤 적용
 {
     public GameObject m_DraggingItem = null;      // 들고 있는 아이템 오브젝트
-    public Item m_DraggingItemInfo = null;        // 들고 있는 아이템 정보
+    public object m_DraggingItemInfo = null;      // 들고 있는 아이템 정보
 
     public Slot m_BeginDraggingSlotInfo = null;   // 드래그 시작한 슬롯 정보
 
