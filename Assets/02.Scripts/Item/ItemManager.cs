@@ -67,7 +67,7 @@ public class ItemManager : Singleton_Mono<ItemManager> // 싱글톤 적용
                 {
                     if (m_ConsumeItemList[i].m_Item == tempConsumeEnum)     // 리스트에서 같은 아이템 찾기
                     {
-                        retItem = m_ConsumeItemList[i] as T;                  // 형 변환
+                        retItem = m_ConsumeItemList[i] as T;                // 형 변환
                         return retItem;
                     }
                 }

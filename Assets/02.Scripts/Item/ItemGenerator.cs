@@ -32,7 +32,7 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
             
             if (tempSlot.m_SlotState == E_SLOTSTATE.Full) // 아이템이 있으면
             {
-                tempItem = GetFiledInfoToReflectionValueType<E_CONSUMEITEMS>(tempSlot.m_ItemInfo, tempItem); // 슬롯의 아이템 정보 저장
+                tempItem = Core.GetFiledInfoToReflectionValueType<E_CONSUMEITEMS>(tempSlot.m_ItemInfo, tempItem); // 슬롯의 아이템 정보 저장
                 if (tempItem != p_item) // 다른 아이템이면 다음 슬롯으로 넘어감
                 {
                     continue;
@@ -80,13 +80,13 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
                     {
                         currItemCount += tempVal;       // 부족한 개수 채워주기
                         getItemCount -= tempVal;        // 채워준 개수만큼 빼기
-                        tempImage.sprite = GetFiledInfoToReflectionReferenceType<Sprite>(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
+                        tempImage.sprite = Core.GetFiledInfoToReflectionReferenceType<Sprite>(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
                         tempText.text = currItemCount.ToString(); // 변경 내용 저장
                         tempSlot.UpdateSlotUI(); // 슬롯 UI 업데이트
                         continue;
                     }
 
-                    tempImage.sprite = GetFiledInfoToReflectionReferenceType<Sprite>(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
+                    tempImage.sprite = Core.GetFiledInfoToReflectionReferenceType<Sprite>(tempSlot.m_ItemInfo, tempImage.sprite); // Sprite 저장
                     tempText.text = getItemCount.ToString(); // 개수 저장
                     tempSlot.UpdateSlotUI(); // 슬롯 UI 업데이트
                     break;
@@ -94,89 +94,6 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
             }
         }
     }
-    
-    // 밑에 코드로 바꿈
-    // 리플렉션 사용해서 클래스의 멤버변수 정보(Sprite) 가져오기
-    //void GetFiledInfoToSprite(object p_object, ref Image p_image)
-    //{
-    //    // https://ansohxxn.github.io/c%20sharp/ch9-8/ 리플렉션 참고
-    //    // 리플렉션으로 멤버 변수에 접근 (m_ItemInfo :: 자료형 objct)
-    //    Type type = p_object.GetType();
-    //    FieldInfo[] fields = type.GetFields(BindingFlags.Public |
-    //                                        BindingFlags.Instance);
-    //    foreach (var field in fields)
-    //    {
-    //        if (field.FieldType.Name == "Sprite") // 자료형이 Sprite인 멤버 변수
-    //        {
-    //            p_image.sprite = field.GetValue(p_object) as Sprite; // sprite 할당
-    //            break;
-    //        }
-    //    }
-    //}
-
-    // 리플렉션 사용해서 클래스 멤버변수 데이터 가져오기 (참조 형식) class
-    public T GetFiledInfoToReflectionReferenceType<T>(object p_object, T p_dataType) where T : class
-    {
-        // https://ansohxxn.github.io/c%20sharp/ch9-8/ 리플렉션 참고
-        // 리플렉션으로 멤버 변수에 접근 (m_ItemInfo :: 자료형 objct)
-        T retValue;
-        Type type = p_object.GetType();
-        FieldInfo[] fields = type.GetFields(BindingFlags.Public |
-                                            BindingFlags.Instance);
-        foreach (var field in fields)
-        {
-            if (field.FieldType == p_dataType.GetType())  // 매개변수로 가져온 자료형과 같은 자료형 찾기
-            {
-                retValue = field.GetValue(p_object) as T; // 형변환
-                return retValue;
-            }
-        }
-        return null;
-    }
-
-    // 리플렉션 사용해서 클래스 멤버변수 데이터 가져오기 (값 형식) enum
-    public T GetFiledInfoToReflectionValueType<T>(object p_object, T p_dataType) where T : struct
-    {
-        // 리플렉션으로 멤버 변수에 접근 (m_ItemInfo :: 자료형 objct)
-        T retValue;
-        Type type = p_object.GetType();
-        FieldInfo[] fields = type.GetFields(BindingFlags.Public |
-                                            BindingFlags.Instance);
-        foreach (var field in fields)
-        {
-            if (field.FieldType == p_dataType.GetType())  // 매개변수로 가져온 자료형과 같은 자료형 찾기
-            {
-                retValue = (T)field.GetValue(p_object); // 형변환
-                return retValue;
-            }
-        }
-        return default(T);
-    }
-
-    // 리플렉션 사용해서 클래스 멤버변수 아이템 데이터 가져오기
-    //public E_ITEMS GetFiledInfoToReflectionEnum(object p_object, E_ITEMS p_item)
-    //{
-    //    E_ITEMS retItem = E_ITEMS.None;
-    //    if (p_object == null)
-    //    {
-    //        return retItem;
-    //    }
-
-    //    // 리플렉션으로 멤버 변수에 접근 (m_ItemInfo :: 자료형 objct)
-    //    Type type = p_object.GetType();
-    //    FieldInfo[] fields = type.GetFields(BindingFlags.Public |
-    //                                        BindingFlags.Instance);
-    //    foreach (var field in fields)
-    //    {
-    //        if (field.FieldType == p_item.GetType())       // 매개변수로 가져온 자료형과 같은 자료형 찾기
-    //        {
-    //            retItem = (E_ITEMS)field.GetValue(p_object); // 형변환
-    //            return retItem;
-    //        }
-    //    }
-    //    return retItem;
-    //}
-
 
     // 소비 아이템 정보 가져오기
     void GetConsumptionItem(string p_name, E_ITEMTYPE p_type)
@@ -188,7 +105,7 @@ public class ItemGenerator : Singleton_Mono<ItemGenerator> // 싱글톤 적용
         m_ItemInfo = ItemManager.GetInstance.GetItem<ConsumeItem>(p_name, p_type); // 아이템 정보 빼오기
 
         E_CONSUMEITEMS tempEnum = E_CONSUMEITEMS.None;
-        tempEnum = GetFiledInfoToReflectionValueType(m_ItemInfo, tempEnum); // object에 저장된 아이템 정보 빼오기
+        tempEnum = Core.GetFiledInfoToReflectionValueType(m_ItemInfo, tempEnum); // object에 저장된 아이템 정보 빼오기
 
         SetSlotIntoItem(tempEnum); // 슬롯에 아이템 세팅
     }

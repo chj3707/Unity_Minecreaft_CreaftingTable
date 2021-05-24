@@ -59,13 +59,21 @@ public class Slot : MonoBehaviour,
 
                 // 아이템 있는 슬롯(아이템 겹치기, 스왑) 
                 case E_SLOTSTATE.Full:
+                    E_ITEMTYPE tempType = E_ITEMTYPE.None;               // 장비, 소비 아이템 분류용
+                    tempType = Core.GetFiledInfoToReflectionValueType
+                        (this.m_ItemInfo, tempType);                     // 아이템 타입 가져오기
+
                     int currItemCount = int.Parse(m_SlotItemCount.text); // 현재 슬롯에 있는 아이템 개수
-                    
-                    if (currItemCount == ItemGenerator.GetInstance.m_MaxItemCount || 
-                        this.m_ItemInfo != tempManager.m_DraggingItemInfo) // 슬롯 아이템 개수가 가득 찬 경우(스왑) 이거나 서로 다른 아이템 일 경우
+
+                    // 스왑
+                    if (currItemCount == ItemGenerator.GetInstance.m_MaxItemCount ||  // 아이템 개수가 가득참
+                        this.m_ItemInfo != tempManager.m_DraggingItemInfo ||          // 서로 다른 아이템
+                        tempType == E_ITEMTYPE.Equipment)                             // 장비 아이템
                     {
-                        if (eventData.pointerId == -2) // 우클릭 무시
+                        if (eventData.pointerId == -2 || 
+                            tempManager.m_BeginDraggingSlotInfo == null) // 우클릭 , 드래그 시작한 슬롯 정보가 null(완성품 슬롯) 이면 리턴
                             return;
+
                         tempManager.m_isDragging = false;            // 드래그 해제
 
                         // 드래그 시작 슬롯에 현재 슬롯 정보 할당
@@ -213,8 +221,10 @@ public class Slot : MonoBehaviour,
         int DropItemCount = 1;
 
         m_ItemInfo = p_eventManager.m_DraggingItemInfo;   // 아이템 정보 가져오기
+        
         Image tempImage = p_eventManager.m_DraggingItem.GetComponent<Image>();          // 들고 있던 아이템 이미지에 접근
         Text tempText = p_eventManager.m_DraggingItem.GetComponentInChildren<Text>();   // 들고 있던 아이템 텍스트에 접근
+
 
         switch(p_data.pointerId)
         {
@@ -225,7 +235,7 @@ public class Slot : MonoBehaviour,
                 m_SlotItemCount.text = tempText.text;           // 슬롯 아이템 개수 할당
 
                 p_eventManager.m_DraggingItem.SetActive(false); // 드래그 아이템 오브젝트 비활성화
-                
+
                 break;
             
             // 우클릭
@@ -240,7 +250,6 @@ public class Slot : MonoBehaviour,
                 m_SlotItemCount.text = (int.Parse(m_SlotItemCount.text) + DropItemCount).ToString(); // 슬롯 아이템 개수 할당
                 tempText.text = (int.Parse(tempText.text) - DropItemCount).ToString();               // 드래그 중인 아이템 개수 -1
 
-                
                 break;
         }
         
@@ -261,9 +270,32 @@ public class Slot : MonoBehaviour,
 
     public void UpdateSlotUI()
     {
-        /* 슬롯이 빈 상태면 비활성화 */
-        m_SlotItemImage.enabled = m_SlotState == E_SLOTSTATE.Full ? true : false;
-        m_SlotItemCount.enabled = m_SlotState == E_SLOTSTATE.Full ? true : false;
+        // 슬롯이 빈 상태(비활성화)
+        if (m_SlotState == E_SLOTSTATE.Empty)
+        {
+            m_SlotItemImage.enabled = false;
+            m_SlotItemCount.enabled = false;
+        }
+        // 슬롯이 찬 상태(활성화)
+        else
+        {
+            E_ITEMTYPE tempType = E_ITEMTYPE.None;
+            tempType = Core.GetFiledInfoToReflectionValueType<E_ITEMTYPE>(m_ItemInfo, tempType); // 아이템 타입 가져오기
+
+            switch (tempType)
+            {
+                // 장비 아이템
+                case E_ITEMTYPE.Equipment:
+                    m_SlotItemImage.enabled = true;
+                    m_SlotItemCount.enabled = false;
+                    break;
+                // 소비 아이템
+                case E_ITEMTYPE.Consumption:
+                    m_SlotItemImage.enabled = true;
+                    m_SlotItemCount.enabled = true;
+                    break;
+            }
+        }
     }
 
 

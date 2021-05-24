@@ -39,8 +39,8 @@ public enum E_ITEMTYPE
 {
     None = 0,
 
-    Equipment,
-    Consumption
+    Equipment,          // 장비
+    Consumption         // 소비
 }
 
 

@@ -33,9 +33,10 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
         m_FinishedItem = tempItem;                                  // 완성 아이템 정보 할당
 
 
-        m_FinishedItemImage.sprite =
-            ItemGenerator.GetInstance.GetFiledInfoToReflectionReferenceType
+        m_FinishedItemImage.sprite = 
+            Core.GetFiledInfoToReflectionReferenceType
             (m_FinishedItem, m_FinishedItemImage.sprite);           // 완성 아이템 이미지 적용
+
         m_FinishedItemText.text = "1";                              // 완성 아이템 개수 적용
 
         m_SlotState = E_SLOTSTATE.Full;                             // 슬롯 상태 변경
@@ -61,21 +62,23 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
         Text tempText = tempManager.m_DraggingItem.GetComponentInChildren<Text>();    // 드래그 아이템 텍스트에 접근    
 
         E_ITEMTYPE tempItemType = E_ITEMTYPE.None;                                    // 아이템 타입 확인용 임시 변수
-        tempItemType = ItemGenerator.GetInstance.
-            GetFiledInfoToReflectionValueType(m_FinishedItem, tempItemType);          // 완성품의 아이템 타입 가져오기
+        tempItemType = Core.GetFiledInfoToReflectionValueType
+            (m_FinishedItem, tempItemType);                                           // 완성품의 아이템 타입 가져오기
 
         tempImage.sprite = m_FinishedItemImage.sprite;                                // 드래그 아이템 이미지 설정
-        
-        // 아이템 타입별로 텍스트 설정
+
+        // 장비
         if (tempItemType == E_ITEMTYPE.Equipment)                                     // 드래그 아이템 개수 설정
-            tempText.text = null;
-        
+        {
+            tempText.text = "1";
+            tempText.enabled = false; // 장비 아이템 개수 비활성화
+        }
+        // 소비
         else
             tempText.text = (int.Parse(m_FinishedItemText.text)).ToString();
-
-        CreaftingTable.GetInstance.TableReset();        // 제작 테이블 재설정
+     
         ResetSlotUI();                                  // 완성품 슬롯 초기화
-        FinishedCheak();                                // 테이블에 아이템이 남아 있을 수 있으므로 체크
+        CreaftingTable.GetInstance.TableReset();        // 제작 테이블 재설정
     }
 
     public void ResetSlotUI()
@@ -90,7 +93,6 @@ public class FinishedItem : Singleton_Mono<FinishedItem>, // 싱글톤 적용
     {
         // 슬롯 비었으면 비활성화
         m_FinishedItemImage.enabled = m_SlotState == E_SLOTSTATE.Empty ? false : true;
-        //m_FinishedItemText.enabled = m_SlotState == E_SLOTSTATE.Empty ? false : true;
     }
 
     void Start()
