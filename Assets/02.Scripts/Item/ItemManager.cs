@@ -22,18 +22,18 @@ public class ItemManager : Singleton_Mono<ItemManager> // 싱글톤 적용
 
             m_EquipItemList.Add(new EquipItem((E_EQUIPITEMS)i,                                        // 아이템 이름
                                                E_ITEMTYPE.Equipment,                                  // 아이템 타입
-                                               Resources.Load<Sprite>($"Item/{tempString}")));        // 아이템 텍스처
+                                               Resources.Load<Sprite>(tempString)));                  // 아이템 텍스처
         }
 
         E_CONSUMEITEMS ttempEnum;
-        for (int i = 0; i < (int)E_CONSUMEITEMS.Max; i++) // 장비 아이템 추가
+        for (int i = 0; i < (int)E_CONSUMEITEMS.Max; i++) // 소비 아이템 추가
         {
             ttempEnum = (E_CONSUMEITEMS)i;
             tempString = ttempEnum.ToString();
 
-            m_ConsumeItemList.Add(new ConsumeItem((E_CONSUMEITEMS)i,                                      // 아이템 이름
-                                                   E_ITEMTYPE.Consumption,                                // 아이템 타입
-                                                   Resources.Load<Sprite>($"Item/{tempString}")));        // 아이템 텍스처
+            m_ConsumeItemList.Add(new ConsumeItem((E_CONSUMEITEMS)i,                                  // 아이템 이름
+                                                   E_ITEMTYPE.Consumption,                            // 아이템 타입
+                                                   Resources.Load<Sprite>(tempString)));              // 아이템 텍스처
         }
     }
 
